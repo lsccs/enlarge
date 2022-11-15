@@ -1,0 +1,17 @@
+{
+  "name": "ls-preview",
+  "version": "1.0.0",
+  "description": "Enlarge preview picture",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lsccs/ls-preview.git"
+  }
+}
