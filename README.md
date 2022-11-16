@@ -1,46 +1,39 @@
-#### 注： 在dom完全加载完毕之后再初始化
+##### 目前支持下方两种使用方式
 
-##### props
-```typescript
-interface config {
-  
-  type: string, // 处理的类型; 'image'
-  $el: HTMLElement, // 克隆的目标dom
-  el: HTMLElement, // 原始目标dom
-  maskClose: boolean, // 是否开始点击遮罩层关闭
-  rect?: {  // 目标宽高, 在type为image时可以不设置
-    width: number,
-    height: number
-  }
-}
+```javascript
+// 1. 图片预览初始化配置
+const preview = new Enlarge.ImagePreview(ImageConfig)
+// 2. 调用 render 方法渲染图片
+preview.render()
+```
+
+```javascript
+// 1. 其他组件放大预览
+const preview = new Enlarge.AnyPreview(AnyConfig)
+// 2. 调用 render 方法手动触发放大逻辑
+preview.render()
 ```
 
 
-##### 使用方式
 
-```vue
+#### ImageConfig
+| 属性        | 类型     | 描述                               | 默认值 |
+|:----------|:-------|:---------------------------------|:----------|
+| container | string | 标签选择器                            | /         |
+| data      | array  | 图片列表，[{ src: '', dataSrc?: '' }] | []  |
+| sourceSrc | string | 用于设置原图路径的key                     | 'dataSrc' |
+| props     | object | 图片标签的属性                          |           |
 
-<template>
-  <img ref="img" src="" alt="" @load="previewLoad">
-</template>
+
+#### AnyConfig
+| 属性  | 类型      | 描述         | 默认值  |
+|:----|:--------|:-----------|:-----|
+| el  | Element | 绑定的预览dom对象 | null |
 
 
-<script>
-import Preview from "./index";
 
-export default {
-  methods: {
-
-    previewLoad() {
-      const preview = new Preview({
-        type: 'image',
-        el: this.$ref.img
-      })
-      
-      // 也可以通过方法在其他业务场景下触发
-      // preview.startPreview() || preview.endPreview()
-    }
-  }
-}
-</script>
-```
+#### Common
+| 属性        | 类型      | 描述                    | 默认值  |
+|:--------|:--------|:----------------------|:-----|
+| maskClose | boolean | 是否开启点击遮罩关闭            | true |
+| targetRect | object  | 目标对象的位置宽高信息, 图片模式下不必传 | {}   |

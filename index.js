@@ -1,4 +1,3 @@
-import Preview from './src/preview'
+import Enlarge from './src'
 
-
-export default Preview;
+export default Enlarge;

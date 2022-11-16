@@ -1,8 +1,12 @@
-import {addCss, getImageNatural, removeCss} from './utils'
-import createLayout from './components/layout'
-import props from './props'
+import props from "./props";
+import createLayout from "../../src/components/layout";
+import { addCss } from "../../src/utils";
 
-export default class Preview {
+/**
+ * 放大逻辑抽象类
+ */
+export default class Enlarge {
+
   isStart = false
   layout = null
 
@@ -15,10 +19,12 @@ export default class Preview {
 
 
   constructor(source) {
-    const config = Object.assign(props, source)
-    if (!config.el) return;
-    // 初始化属性
-    this.initProps(config)
+    const defaultProps = { ...props }
+    this.config = Object.assign(defaultProps, source)
+  }
+
+  onLoad() {
+    this.initProps()
     // 初始化事件
     this.initEvent()
     // 求出最终定位
@@ -26,12 +32,11 @@ export default class Preview {
   }
 
 
-  initProps(config) {
-    config.$el = this.createContainer(config.el)
-    this.config = config;
-    // 设置原始宽高和当前宽高
-    this.originRect = this.getNaturalRect()
+  initProps() {
+    this.config.$el = this.createContainer ? this.createContainer(this.config.el) : this.config.el
+    // 设置当前宽高和原始宽高
     this.currentRect = this.config.el.getBoundingClientRect()
+    this.originRect = this.config.targetRect || { width: this.currentRect.width, height: this.currentRect.height }
     this.layout = createLayout()
   }
 
@@ -59,7 +64,8 @@ export default class Preview {
   }
 
 
-  clickStart() {
+  clickStart(e) {
+    e.stopPropagation()
     if (this.isStart) {
       this.endPreview()
     } else {
@@ -69,71 +75,67 @@ export default class Preview {
 
 
   startPreview() {
-    // 1. 添加过渡动画, 添加定位
-    // 2. 插入元素
-    // 3. 添加最终定位及宽高
     const { $el } = this.config
-    const { left, top } = this.currentRect
+    // 设置初始态
+    this.setInitialCss($el)
 
-    addCss($el, { transition: 'all .3s', position: 'absolute', left, top })
-    this.renderDom($el)
+    // 第一阶段钩子触发
+    this.onWillMount && this.onWillMount()
+
+    this.insertDom($el)
     // 重新触发回流，否则无法触发动画
     const _ = $el.clientHeight
     addCss($el, this.originRect)
-    this.setStartConfig()
+
+    // 第二阶段钩子触发
+    this.isStart = true
+    this.onMounted && this.onMounted()
   }
 
 
-  endPreview() {
+  endPreview(e) {
     const { $el } = this.config
     const { left, top, width, height } = this.currentRect
     addCss($el, { left, top, width, height })
-    this.setEndConfig()
+    this.isStart = false
+    this.setEndConfig && this.setEndConfig()
   }
 
 
-  renderDom(dom) {
+  insertDom(dom) {
     this.layout.dom.appendChild(dom)
     document.body.appendChild(this.layout.dom)
   }
 
-  getNaturalRect() {
-    const { type, rect = {}, el } = this.config
-    return type === 'image' ? getImageNatural(el) : rect
+  setTargetAndRect({ el, targetRect }) {
+    this.config.$el = el
+    this.config.originRect = targetRect
+    this.registerEvents(el, this.cloneDomEvents)
   }
 
-
-  createContainer(el) {
-    return el.cloneNode(true)
+  setInitialCss($el) {
+    const { left, top, width, height } = this.currentRect
+    addCss($el, {
+      transition: 'all .3s',
+      position: 'absolute',
+      'z-index': '1000',
+      left, top, width, height
+    })
   }
 
-  setStartConfig() {
-    const { el } = this.config
-    this.isStart = true
-    this.layout.show()
-    addCss(el, { opacity: 0 }, false)
-  }
-
-  setEndConfig() {
-    this.isStart = false
-    this.layout.hide()
-  }
-
-  setEndCallback() {
-    const { el } = this.config
-    removeCss(el, 'opacity')
+  setCurrentRect(rect) {
+    this.currentRect = rect
   }
 
   // 动画结束回调
   transitionend(e) {
-    // 需要在关闭并且动画结束时销毁克隆元素, 只识别left变化, 否则会执行多遍
-    if (e.propertyName !== 'left') return;
+    // 需要在关闭并且动画结束时销毁克隆元素
     const { $el } = this.config
-
     if (!this.isStart && e.target === $el) {
       const { dom } = this.layout
-      dom && dom.parentNode.removeChild(dom)
-      this.setEndCallback()
+      if (dom && dom.parentNode) {
+        this.setEndCallback && this.setEndCallback(dom)
+      }
     }
   }
 }
