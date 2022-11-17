@@ -1,6 +1,6 @@
 {
   "name": "enlarge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Enlarge preview picture or anything",
   "main": "index.js",
   "scripts": {
