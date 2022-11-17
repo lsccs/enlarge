@@ -2,7 +2,7 @@
  * 放大预览 (占位元素，适用于其他)
  */
 import Enlarge from "../enlarge";
-import {removeCss} from "../../src/utils";
+import { removeCss } from "../../src/utils";
 
 export default class SeizeEnlarge extends Enlarge {
 
@@ -49,9 +49,15 @@ export default class SeizeEnlarge extends Enlarge {
     dom.parentNode.removeChild(dom)
     const empty = SeizeEnlarge.seizeMap.get(this.sourceDom)
     empty.parentNode.removeChild(empty)
-    removeCss(this.sourceDom, 'position')
+    // 清除定位样式
+    this.clearCss()
   }
 
+
+  clearCss() {
+    const attrs = ['position', 'left', 'top']
+    attrs.forEach(k => removeCss(this.sourceDom, k))
+  }
 
   createContainer() {
     return this.sourceDom

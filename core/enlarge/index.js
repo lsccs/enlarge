@@ -1,6 +1,6 @@
 import props from "./props";
 import createLayout from "../../src/components/layout";
-import { addCss } from "../../src/utils";
+import {addCss, removeCss} from "../../src/utils";
 
 /**
  * 放大逻辑抽象类
@@ -34,9 +34,10 @@ export default class Enlarge {
 
   initProps() {
     this.config.$el = this.createContainer ? this.createContainer(this.config.el) : this.config.el
-    // 设置当前宽高和原始宽高
+    // 设置原始宽高
     this.currentRect = this.config.el.getBoundingClientRect()
-    this.originRect = this.config.targetRect || { width: this.currentRect.width, height: this.currentRect.height }
+    const currentRect = { width: this.currentRect.width, height: this.currentRect.height }
+    this.originRect = Object.assign(currentRect, this.config.targetRect)
     this.layout = createLayout()
   }
 
@@ -75,10 +76,11 @@ export default class Enlarge {
 
 
   startPreview() {
-    const { $el } = this.config
+    const { $el, el } = this.config
+    // 点击重新计算
+    this.currentRect = el.getBoundingClientRect()
     // 设置初始态
     this.setInitialCss($el)
-
     // 第一阶段钩子触发
     this.onWillMount && this.onWillMount()
 
@@ -96,6 +98,8 @@ export default class Enlarge {
   endPreview(e) {
     const { $el } = this.config
     const { left, top, width, height } = this.currentRect
+    // 先清除其他属性
+    this.clearAttrs($el)
     addCss($el, { left, top, width, height })
     this.isStart = false
     this.setEndConfig && this.setEndConfig()
@@ -117,7 +121,7 @@ export default class Enlarge {
     const { left, top, width, height } = this.currentRect
     addCss($el, {
       transition: 'all .3s',
-      position: 'absolute',
+      position: 'fixed',
       'z-index': '1000',
       left, top, width, height
     })
@@ -127,6 +131,14 @@ export default class Enlarge {
     this.currentRect = rect
   }
 
+  clearAttrs(el) {
+    Object.keys(this.originRect).forEach(key => {
+      if (!(key in this.currentRect)) {
+        removeCss(el, key)
+      }
+    })
+  }
+
   // 动画结束回调
   transitionend(e) {
     // 需要在关闭并且动画结束时销毁克隆元素
@@ -134,6 +146,7 @@ export default class Enlarge {
     if (!this.isStart && e.target === $el) {
       const { dom } = this.layout
       if (dom && dom.parentNode) {
+        // 清除样式
         this.setEndCallback && this.setEndCallback(dom)
       }
     }

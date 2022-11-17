@@ -2,14 +2,14 @@
 
 ```javascript
 // 1. 图片预览初始化配置
-const preview = new Enlarge.ImagePreview(ImageConfig)
+const preview = Enlarge.ImagePreview(ImageConfig)
 // 2. 调用 render 方法渲染图片
 preview.render()
 ```
 
 ```javascript
 // 1. 其他组件放大预览
-const preview = new Enlarge.AnyPreview(AnyConfig)
+const preview = Enlarge.AnyPreview(AnyConfig)
 // 2. 调用 render 方法手动触发放大逻辑
 preview.render()
 ```
@@ -33,7 +33,7 @@ preview.render()
 
 
 #### Common
-| 属性        | 类型      | 描述                    | 默认值  |
-|:--------|:--------|:----------------------|:-----|
-| maskClose | boolean | 是否开启点击遮罩关闭            | true |
-| targetRect | object  | 目标对象的位置宽高信息, 图片模式下不必传 | {}   |
+| 属性        | 类型      | 描述                     | 默认值  |
+|:--------|:--------|:-----------------------|:-----|
+| maskClose | boolean | 是否开启点击遮罩关闭             | true |
+| targetRect | object  | 目标对象的任意位置大小属性, 图片模式下无效 | {}   |
