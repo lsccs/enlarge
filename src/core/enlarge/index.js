@@ -1,6 +1,7 @@
 import props from "./props";
-import createLayout from "../../src/components/layout";
-import {addCss, removeCss} from "../../src/utils";
+import createLayout from "../../components/layout";
+import {addCss, getImageNatural, removeCss} from "../../utils";
+import Mask from "../mask";
 
 /**
  * 放大逻辑抽象类
@@ -9,13 +10,17 @@ export default class Enlarge {
 
   isStart = false
   layout = null
+  mask = null
 
   config = null
   originRect = null
   currentRect = null
 
   originDomEvents = [['click', 'clickStart']]
-  cloneDomEvents = [['transitionend', 'transitionend']]
+  cloneDomEvents = [['transitionend', 'enlargeDestroy']]
+
+  clearEventNames = ['click']
+  eventPool = new Map()
 
 
   constructor(source) {
@@ -25,6 +30,7 @@ export default class Enlarge {
 
   onLoad() {
     this.initProps()
+    this.initLayout()
     // 初始化事件
     this.initEvent()
     // 求出最终定位
@@ -37,10 +43,18 @@ export default class Enlarge {
     // 设置原始宽高
     this.currentRect = this.config.el.getBoundingClientRect()
     const currentRect = { width: this.currentRect.width, height: this.currentRect.height }
-    this.originRect = Object.assign(currentRect, this.config.targetRect)
-    this.layout = createLayout()
+    // 尝试获取图片原始大小
+    const natural = getImageNatural(this.config.el)
+    this.originRect = {
+      ...currentRect,
+      ...(natural.width ? natural : {}),
+      ...this.config.targetRect
+    }
   }
 
+  initLayout() {
+    this.layout = createLayout()
+  }
 
   initLastRect() {
     const { width, height } = document.body.getBoundingClientRect()
@@ -50,18 +64,33 @@ export default class Enlarge {
   }
 
   initEvent() {
-    const { maskClose, $el, el } = this.config
+    const { $el, el } = this.config
     // 原生dom只需要绑定点击事件
     this.registerEvents(el, this.originDomEvents)
     this.registerEvents($el, this.cloneDomEvents)
-    if (maskClose) this.registerEvents(this.layout.mask, this.originDomEvents)
   }
 
   registerEvents(el, events) {
     events.forEach(events => {
       const [name, cb] = events
-      el.addEventListener(name, this[cb].bind(this))
+      const method = (...arg) => {
+        this[cb](...arg)
+      }
+      this.eventPool.set(el, { method, name })
+      el.addEventListener(name, method)
     })
+  }
+
+  // 清除事件的原因：
+  // 在切换图片的时候, 没有重新生成 mask,
+  // 所以, 会存在上一个图片的点击事件,
+  // 这时, 关闭预览时, 会触发上一个图片的逻辑
+  clearEvents(el) {
+    const map = this.eventPool.get(el)
+    const { method, name } = map || {}
+    if (this.clearEventNames.includes(name)) {
+      el.removeEventListener(name, method)
+    }
   }
 
 
@@ -75,7 +104,7 @@ export default class Enlarge {
   }
 
 
-  startPreview() {
+  startPreview(animation = true) {
     const { $el, el } = this.config
     // 点击重新计算
     this.currentRect = el.getBoundingClientRect()
@@ -83,23 +112,33 @@ export default class Enlarge {
     this.setInitialCss($el)
     // 第一阶段钩子触发
     this.onWillMount && this.onWillMount()
+    // 第二阶段
+    this.startComplete(animation)
+  }
 
+  startComplete(animation) {
+    const { $el, maskClose } = this.config
     this.insertDom($el)
     // 重新触发回流，否则无法触发动画
-    const _ = $el.clientHeight
+    if (animation) {
+      const _ = $el.clientHeight
+    }
     addCss($el, this.originRect)
 
-    // 第二阶段钩子触发
     this.isStart = true
     this.onMounted && this.onMounted()
+    if (maskClose) this.registerEvents(Mask.dom, this.originDomEvents)
   }
 
 
-  endPreview(e) {
+  endPreview(animation = true) {
     const { $el } = this.config
     const { left, top, width, height } = this.currentRect
     // 先清除其他属性
     this.clearAttrs($el)
+    if (!animation) {
+      removeCss($el, 'transition')
+    }
     addCss($el, { left, top, width, height })
     this.isStart = false
     this.setEndConfig && this.setEndConfig()
@@ -113,9 +152,14 @@ export default class Enlarge {
 
   setTargetAndRect({ el, targetRect }) {
     this.config.$el = el
-    this.config.originRect = targetRect
+    this.originRect = targetRect
+
     this.registerEvents(el, this.cloneDomEvents)
+    // 重新计算位置
+    this.initLastRect()
+    addCss(el, targetRect)
   }
+
 
   setInitialCss($el) {
     const { left, top, width, height } = this.currentRect
@@ -140,12 +184,13 @@ export default class Enlarge {
   }
 
   // 动画结束回调
-  transitionend(e) {
+  enlargeDestroy(e) {
     // 需要在关闭并且动画结束时销毁克隆元素
     const { $el } = this.config
     if (!this.isStart && e.target === $el) {
       const { dom } = this.layout
       if (dom && dom.parentNode) {
+        this.clearEvents(Mask.dom)
         // 清除样式
         this.setEndCallback && this.setEndCallback(dom)
       }

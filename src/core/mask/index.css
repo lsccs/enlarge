@@ -1,5 +1,5 @@
 
-.ls .ls-preview-mask {
+.ls-preview-mask {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,10 +8,10 @@
     transition: background-color .3s;
 }
 
-.ls .ls-preview-mask.show {
+.ls-preview-mask.show {
     background-color: rgba(0, 0, 0, .6);
 }
 
-.ls .ls-preview-mask.hide {
+.ls-preview-mask.hide {
     background-color: rgba(0, 0, 0, 0);
 }

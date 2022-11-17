@@ -2,7 +2,8 @@
  * 放大预览 (占位元素，适用于其他)
  */
 import Enlarge from "../enlarge";
-import { removeCss } from "../../src/utils";
+import { removeCss } from "../../utils";
+import Mask from "../mask";
 
 export default class SeizeEnlarge extends Enlarge {
 
@@ -30,19 +31,18 @@ export default class SeizeEnlarge extends Enlarge {
 
   // 放大预览完成
   onMounted() {
-    this.layout.show()
+    Mask.show()
   }
 
 
   // 占位模式不确定具体预览时机, 不注册原dom事件
   initEvent() {
-    const { $el, maskClose } = this.config
+    const { $el } = this.config
     this.registerEvents($el, this.cloneDomEvents)
-    if (maskClose) this.registerEvents(this.layout.mask, this.originDomEvents)
   }
 
   setEndConfig() {
-    this.layout.hide()
+    Mask.hide()
   }
 
   setEndCallback(dom) {

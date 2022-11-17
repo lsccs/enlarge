@@ -1,13 +1,16 @@
-import { addCss, removeCss } from '../../src/utils'
+import { addCss, removeCss } from '../../utils'
 import Enlarge from "../enlarge";
+import ImageControl from "../../components/imageControl";
 
 /**
  * 放大预览 (克隆元素，适用于图片)
  */
 export default class CloneEnlarge extends Enlarge {
+  static handle = null
 
   constructor(source) {
     super(source)
+    CloneEnlarge.handle = source.handle
   }
 
   createContainer(el) {
@@ -16,12 +19,12 @@ export default class CloneEnlarge extends Enlarge {
 
   onMounted() {
     const { el } = this.config
-    this.layout.show()
+    ImageControl.show(CloneEnlarge.handle)
     addCss(el, { opacity: 0 }, false)
   }
 
   setEndConfig() {
-    this.layout.hide()
+    ImageControl.hide()
   }
 
   setEndCallback(dom) {
