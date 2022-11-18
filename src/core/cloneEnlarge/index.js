@@ -13,14 +13,22 @@ export default class CloneEnlarge extends Enlarge {
     CloneEnlarge.handle = source.handle
   }
 
-  createContainer(el) {
-    return el.cloneNode(true)
+  clickStart() {
+    // 每次关闭或者打开都重新计算原图位置, 有可能滚动条滚动位置发生变化
+    this.setCurrentRect(this.config.el.getBoundingClientRect())
+    super.clickStart();
+  }
+
+  onWillMount() {
+    addCss(this.config.el, { opacity: 0 }, false)
   }
 
   onMounted() {
-    const { el } = this.config
     ImageControl.show(CloneEnlarge.handle)
-    addCss(el, { opacity: 0 }, false)
+  }
+
+  createContainer(el) {
+    return el.cloneNode(true)
   }
 
   setEndConfig() {

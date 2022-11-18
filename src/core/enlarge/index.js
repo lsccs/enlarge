@@ -94,8 +94,7 @@ export default class Enlarge {
   }
 
 
-  clickStart(e) {
-    e.stopPropagation()
+  clickStart() {
     if (this.isStart) {
       this.endPreview()
     } else {
@@ -104,10 +103,9 @@ export default class Enlarge {
   }
 
 
+
   startPreview(animation = true) {
-    const { $el, el } = this.config
-    // 点击重新计算
-    this.currentRect = el.getBoundingClientRect()
+    const { $el } = this.config
     // 设置初始态
     this.setInitialCss($el)
     // 第一阶段钩子触发
@@ -120,13 +118,14 @@ export default class Enlarge {
     const { $el, maskClose } = this.config
     this.insertDom($el)
     // 重新触发回流，否则无法触发动画
+    // 需要动画时采取要调用钩子
     if (animation) {
       const _ = $el.clientHeight
+      this.onMounted && this.onMounted()
     }
     addCss($el, this.originRect)
 
     this.isStart = true
-    this.onMounted && this.onMounted()
     if (maskClose) this.registerEvents(Mask.dom, this.originDomEvents)
   }
 
@@ -136,12 +135,14 @@ export default class Enlarge {
     const { left, top, width, height } = this.currentRect
     // 先清除其他属性
     this.clearAttrs($el)
-    if (!animation) {
+    if (animation) {
+      this.setEndConfig && this.setEndConfig()
+    } else {
       removeCss($el, 'transition')
     }
     addCss($el, { left, top, width, height })
     this.isStart = false
-    this.setEndConfig && this.setEndConfig()
+
   }
 
 
@@ -191,7 +192,6 @@ export default class Enlarge {
       const { dom } = this.layout
       if (dom && dom.parentNode) {
         this.clearEvents(Mask.dom)
-        // 清除样式
         this.setEndCallback && this.setEndCallback(dom)
       }
     }

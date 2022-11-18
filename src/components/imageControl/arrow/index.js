@@ -13,6 +13,7 @@ export default function createArrow(handle) {
   left.icon = 'material-symbols:arrow-circle-left'
   right.icon = 'material-symbols:arrow-circle-right'
 
+  right.style = left.style = 'color: rgba(0, 0, 0, .5);'
   left.className = right.className = 'ls-arrow-icon'
 
   left.addEventListener('click', e => {

@@ -15,6 +15,17 @@ export default class SeizeEnlarge extends Enlarge {
     super(source)
   }
 
+
+  clickStart(e) {
+    // 每次关闭或者打开都重新计算原图位置, 有可能滚动条滚动位置发生变化
+    let div = SeizeEnlarge.seizeMap.get(this.sourceDom)
+    if (!this.isStart) {
+      div = this.config.el
+    }
+    this.setCurrentRect(div.getBoundingClientRect())
+    super.clickStart(e);
+  }
+
   onLoad() {
     SeizeEnlarge.setEmptyBlock(this.config)
     this.sourceDom = this.config.el

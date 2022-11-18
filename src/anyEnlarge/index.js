@@ -22,7 +22,7 @@ export default class AnyPreview {
 
 
   render() {
-    this.preview.startPreview()
+    this.preview.clickStart()
   }
 
 

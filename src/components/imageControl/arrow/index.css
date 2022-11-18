@@ -27,12 +27,11 @@
 
 .ls-arrow-icon {
     font-size: 60px;
-    color: #999;
     cursor: pointer;
     user-select: none;
     transition: .3s;
 }
 
 .ls-arrow-icon:hover {
-    color: #eee;
+    color: rgba(0, 0, 0, .8) !important;
 }

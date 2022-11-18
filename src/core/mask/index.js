@@ -38,10 +38,12 @@ export default class Mask {
         Mask.dom.className = baseClassName + ' hide'
     }
 
-    static ontransitionend() {
-        if (Mask.dom.className.includes('hide')) {
-            document.body.removeChild(Mask.dom)
-            Mask.dom = null
+    static ontransitionend(e) {
+        if (e.propertyName === 'background-color') {
+            if (Mask.dom.className.includes('hide')) {
+                document.body.removeChild(Mask.dom)
+                Mask.dom = null
+            }
         }
     }
 }

@@ -9,7 +9,7 @@
 }
 
 .ls-preview-mask.show {
-    background-color: rgba(0, 0, 0, .6);
+    background-color: rgba(0, 0, 0, .5);
 }
 
 .ls-preview-mask.hide {
