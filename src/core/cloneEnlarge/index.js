@@ -1,6 +1,6 @@
 import { addCss, removeCss } from '../../utils'
 import Enlarge from "../enlarge/index";
-import ImageControl from "../../components/imageControl";
+import ImageControl from "../../components/imageControl/index";
 
 /**
  * 放大预览 (克隆元素，适用于图片)

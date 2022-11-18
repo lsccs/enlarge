@@ -1,13 +1,15 @@
 import { babel } from "@rollup/plugin-babel";
 import postcss from 'rollup-plugin-postcss';
+import commonjs from "rollup-plugin-commonjs";
+import resolve from 'rollup-plugin-node-resolve';
+import { terser } from 'rollup-plugin-terser';
 
 export default {
   input: './src/index.js',
-  allowAllFormats: true,
   output: [
     {
       file: './dist/index.js',
-      format: 'umd',
+      format: 'es',
       name: 'enlarge',
     }
   ],
@@ -21,8 +23,12 @@ export default {
         'babel-plugin-transform-class-properties'
       ]
     }),
+    commonjs(),
+    resolve(),
     postcss({
       extensions: ['.css']
     }),
+
+    terser()
   ],
 };

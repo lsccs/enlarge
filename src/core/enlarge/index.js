@@ -1,7 +1,7 @@
 import props from "./props";
-import createLayout from "../../components/layout";
+import createLayout from "../../components/layout/index";
 import {addCss, getImageNatural, removeCss} from "../../utils";
-import Mask from "../mask";
+import Mask from "../mask/index";
 
 /**
  * 放大逻辑抽象类

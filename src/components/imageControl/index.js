@@ -1,5 +1,5 @@
-import Mask from "../../core/mask";
-import createArrow from "./arrow";
+import Mask from "../../core/mask/index";
+import createArrow from "./arrow/index";
 
 
 export default class ImageControl {

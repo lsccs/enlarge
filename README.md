@@ -15,6 +15,12 @@ const preview = Enlarge.AnyPreview(AnyConfig)
 preview.render()
 ```
 
+```javascript
+class Enlarge {
+  // 添加全局配置
+  static setGlobalCOnfig();
+}
+```
 
 
 #### ImageConfig
