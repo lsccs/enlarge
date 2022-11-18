@@ -1,7 +1,7 @@
 /**
  * 放大预览 (占位元素，适用于其他)
  */
-import Enlarge from "/enlarge";
+import Enlarge from "../enlarge/index";
 import { removeCss } from "../../utils";
 import Mask from "../mask/index";
 
