@@ -1,10 +1,10 @@
 import props from "../imageEnlarge/props";
-import SeizeEnlarge from "../core/seizeEnlarge";
+import SeizeEnlarge from "../core/seizeEnlarge/index";
 
 export default class AnyPreview {
 
-  config = null
-  preview = null
+  config = null;
+  preview = null;
 
   constructor(source) {
     const defaultProps = { ...props }

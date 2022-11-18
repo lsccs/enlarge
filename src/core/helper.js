@@ -32,12 +32,22 @@ export default class Helper {
     // 1. 关闭当前预览
     // 2. 没有过渡效果, 所以手动销毁
     // 3. 打开新的预览
-    Helper.currentImage.endPreview(false)
-    Helper.currentImage.enlargeDestroy({ target: Helper.currentImage.config.$el })
+    const el = Helper.currentImage.config.$el
+    const nextEl = image.config.$el
+    el.addEventListener('animationend', Helper.animationend)
+    el.className = `preview-fade-out`
+    nextEl.className = `preview-fade-in`
     image.startPreview(false)
   }
 
   static findImageIndex() {
     return Helper.imageList.findIndex(item => item.config.el === Helper.currentImage.config.el)
+  }
+
+  static animationend(e) {
+    e.target.removeEventListener(e.type, Helper.animationend)
+    Helper.currentImage.endPreview(false)
+    Helper.currentImage.enlargeDestroy(e)
+    e.target.className = ''
   }
 }

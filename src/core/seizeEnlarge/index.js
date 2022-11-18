@@ -1,9 +1,9 @@
 /**
  * 放大预览 (占位元素，适用于其他)
  */
-import Enlarge from "../enlarge";
+import Enlarge from "/enlarge";
 import { removeCss } from "../../utils";
-import Mask from "../mask";
+import Mask from "../mask/index";
 
 export default class SeizeEnlarge extends Enlarge {
 

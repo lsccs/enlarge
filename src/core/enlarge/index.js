@@ -103,7 +103,6 @@ export default class Enlarge {
   }
 
 
-
   startPreview(animation = true) {
     const { $el } = this.config
     // 设置初始态
@@ -141,8 +140,8 @@ export default class Enlarge {
       removeCss($el, 'transition')
     }
     addCss($el, { left, top, width, height })
+    this.clearEvents(Mask.dom)
     this.isStart = false
-
   }
 
 
@@ -191,7 +190,6 @@ export default class Enlarge {
     if (!this.isStart && e.target === $el) {
       const { dom } = this.layout
       if (dom && dom.parentNode) {
-        this.clearEvents(Mask.dom)
         this.setEndCallback && this.setEndCallback(dom)
       }
     }

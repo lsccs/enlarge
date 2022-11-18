@@ -2,16 +2,27 @@
   "name": "enlarge",
   "version": "1.0.1",
   "description": "Enlarge preview picture or anything",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c"
   },
-  "keywords": [],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "preview",
+    "image"
+  ],
   "author": "",
   "license": "MIT",
-
   "repository": {
     "type": "git",
     "url": "https://github.com/lsccs/enlarge.git"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@rollup/plugin-babel": "^6.0.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "rollup-plugin-postcss": "^4.0.2"
   }
 }

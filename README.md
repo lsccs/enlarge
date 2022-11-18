@@ -1,5 +1,6 @@
 ##### 目前支持下方两种使用方式
 
+##### * 项目引入了 Iconify 图标库
 ```javascript
 // 1. 图片预览初始化配置
 const preview = Enlarge.ImagePreview(ImageConfig)
