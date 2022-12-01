@@ -107,6 +107,7 @@ export default class ImagePreview {
       const { load, src, $src } = target.config.$el
       if (load && $src !== src) load()
       this.currentImage = target
+      Helper.setConfig(this.getHandleConfig())
     }
     return target[property]
   }
@@ -118,10 +119,7 @@ export default class ImagePreview {
         el: img,
         ...this.config,
         handle: ({ name, arg }) =>
-          Helper.handle({
-            name,
-            arg: { ...arg, ...this.getHandleConfig() }
-          })
+          Helper.handle({ name, arg })
       }),
       { get: this.getProperty.bind(this) }
     ]

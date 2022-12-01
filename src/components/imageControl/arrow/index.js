@@ -2,11 +2,11 @@
  * 返回切换箭头控件
  */
 import './index.css'
+import Render from "../../../core/render";
 
-const baseClassName = 'ls-arrow'
 export default function createArrow(handle) {
-  const dom = document.createElement('div')
-  dom.className = baseClassName
+
+  const render = new Render({baseClassName: 'ls-arrow-icon', showName: 'preview-fade-in', hideName: 'preview-fade-out'})
 
   const left = document.createElement('iconify-icon')
   const right = document.createElement('iconify-icon')
@@ -14,7 +14,8 @@ export default function createArrow(handle) {
   right.icon = 'material-symbols:arrow-circle-right'
 
   right.style = left.style = 'color: rgba(0, 0, 0, .5);'
-  left.className = right.className = 'ls-arrow-icon'
+  left.className += ' left'
+  right.className += ' right'
 
   left.addEventListener('click', e => {
     e.stopPropagation()
@@ -25,14 +26,14 @@ export default function createArrow(handle) {
     handle({ name: 'rightClick', arg: { e } })
   })
 
-  dom.append(...[ left, right ])
+  const dom = [ left, right ]
   return {
     dom,
     show() {
-      dom.className = baseClassName + ' show'
+      render.showNodes(dom)
     },
     hide() {
-      dom.className = baseClassName + ' hide'
+      render.hideNodes()
     }
   }
 }

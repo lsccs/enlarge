@@ -1,7 +1,7 @@
 import props from "./props";
 import createLayout from "../../components/layout/index";
 import {addCss, getImageNatural, removeCss} from "../../utils";
-import Mask from "../mask/index";
+import Mask from "../../components/mask/index";
 
 /**
  * 放大逻辑抽象类
@@ -125,7 +125,7 @@ export default class Enlarge {
     addCss($el, this.originRect)
 
     this.isStart = true
-    if (maskClose) this.registerEvents(Mask.dom, this.originDomEvents)
+    if (maskClose) this.registerEvents(Mask.getInstance().dom, this.originDomEvents)
   }
 
 
@@ -140,7 +140,7 @@ export default class Enlarge {
       removeCss($el, 'transition')
     }
     addCss($el, { left, top, width, height })
-    this.clearEvents(Mask.dom)
+    this.clearEvents(Mask.getInstance().dom)
     this.isStart = false
   }
 

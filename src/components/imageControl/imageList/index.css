@@ -1,0 +1,33 @@
+.preview-control {
+    width: 100%;
+    background: rgba(0, 0, 0, .5);
+
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2000;
+}
+
+.preview-control-image-list {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    transition: transform .3s;
+}
+
+.preview-control .preview-image {
+    opacity: .5;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.preview-control .preview-image:hover {
+    opacity: 1;
+}
+.preview-control .preview-image.active {
+    opacity: 1;
+}

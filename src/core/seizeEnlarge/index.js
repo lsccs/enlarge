@@ -3,7 +3,7 @@
  */
 import Enlarge from "../enlarge/index";
 import { removeCss } from "../../utils";
-import Mask from "../mask/index";
+import Mask from "../../components/mask/index";
 
 export default class SeizeEnlarge extends Enlarge {
 
@@ -42,7 +42,7 @@ export default class SeizeEnlarge extends Enlarge {
 
   // 放大预览完成
   onMounted() {
-    Mask.show()
+    Mask.getInstance().show()
   }
 
 
@@ -53,7 +53,7 @@ export default class SeizeEnlarge extends Enlarge {
   }
 
   setEndConfig() {
-    Mask.hide()
+    Mask.getInstance().hide()
   }
 
   setEndCallback(dom) {

@@ -1,10 +1,11 @@
 {
   "name": "preview-enlarge",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Enlarge preview picture or anything",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "publish": "npm run build && npm publish"
   },
   "files": [
     "dist"

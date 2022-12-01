@@ -1,26 +1,25 @@
-import Mask from "../../core/mask/index";
+import Mask from "../mask/index";
 import createArrow from "./arrow/index";
+import createImageList from './imageList/index'
 
 
 export default class ImageControl {
 
   static controlList = []
 
-  static show(handle) {
+  static show(source) {
     ImageControl.controlList = [
-      createArrow(handle)
+      createArrow(source.handle),
+      createImageList(source)
     ]
-
-    Mask.show(
-      ImageControl.controlList.map(control => {
-        control.show()
-        return control.dom
-      })
-    )
+    Mask.getInstance().show()
+    ImageControl.controlList.forEach(control => {
+      control.show()
+    })
   }
 
   static hide() {
-    Mask.hide()
+    Mask.getInstance().hide()
     ImageControl.controlList.forEach(control => control.hide())
   }
 }

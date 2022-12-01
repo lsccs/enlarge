@@ -1,35 +1,22 @@
 
-.ls-arrow {
-    box-sizing: border-box;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-    transition: .3s;
-    padding: 0 30px;
-}
-
-
-.ls-arrow.show {
-    opacity: 1;
-}
-
-.ls-arrow.hide {
-    opacity: 0;
-}
-
 .ls-arrow-icon {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+
     font-size: 60px;
     cursor: pointer;
     user-select: none;
-    transition: .3s;
+    transition: color .3s;
+    z-index: 2000;
+}
+
+.ls-arrow-icon.left {
+    left: 30px;
+}
+
+.ls-arrow-icon.right {
+    right: 30px;
 }
 
 .ls-arrow-icon:hover {
