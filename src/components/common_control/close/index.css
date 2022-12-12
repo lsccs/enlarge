@@ -1,0 +1,18 @@
+.ls-close-icon {
+    font-size: 60px;
+    cursor: pointer;
+    user-select: none;
+    color: rgba(0, 0, 0, .5);
+
+    display: flex;
+    transition: .3s;
+
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    z-index: 2000;
+}
+.ls-close-icon:hover {
+    color: rgba(0, 0, 0, .8) !important;
+    transform: rotateZ(90deg);
+}

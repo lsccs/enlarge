@@ -8,6 +8,7 @@
     cursor: pointer;
     user-select: none;
     transition: color .3s;
+    color: rgba(0, 0, 0, .5);
     z-index: 2000;
 }
 

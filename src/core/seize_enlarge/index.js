@@ -3,12 +3,13 @@
  */
 import Enlarge from "../enlarge/index";
 import { removeCss } from "../../utils";
-import Mask from "../../components/mask/index";
+import CommonControl from "../../components/common_control/index";
 
 export default class SeizeEnlarge extends Enlarge {
 
   static seizeMap = new Map()
 
+  siblingNode = null
   sourceDom = null
 
   constructor(source) {
@@ -42,7 +43,7 @@ export default class SeizeEnlarge extends Enlarge {
 
   // 放大预览完成
   onMounted() {
-    Mask.getInstance().show()
+    CommonControl.show()
   }
 
 
@@ -53,13 +54,15 @@ export default class SeizeEnlarge extends Enlarge {
   }
 
   setEndConfig() {
-    Mask.getInstance().hide()
+    CommonControl.hide()
   }
 
   setEndCallback(dom) {
+    const { el } = this.config
     dom.parentNode.removeChild(dom)
     const empty = SeizeEnlarge.seizeMap.get(this.sourceDom)
     empty.parentNode.removeChild(empty)
+    this.siblingNode.parentNode.insertBefore(el, this.siblingNode)
     // 清除定位样式
     this.clearCss()
   }
@@ -74,8 +77,9 @@ export default class SeizeEnlarge extends Enlarge {
     return this.sourceDom
   }
 
-  insertDom() {
-    document.body.appendChild(this.layout.dom)
+  insertDom(dom) {
+    this.siblingNode = dom.nextSibling
+    super.insertDom(dom)
   }
 
 

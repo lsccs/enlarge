@@ -1,7 +1,7 @@
-import Mask from "../mask/index";
 import createArrow from "./arrow/index";
 import createImageList from './imageList/index'
 
+import CommonControl from '../common_control/index'
 
 export default class ImageControl {
 
@@ -9,17 +9,16 @@ export default class ImageControl {
 
   static show(source) {
     ImageControl.controlList = [
-      createArrow(source.handle),
+      createArrow(source),
       createImageList(source)
     ]
-    Mask.getInstance().show()
-    ImageControl.controlList.forEach(control => {
-      control.show()
-    })
+
+    CommonControl.show(source)
+    ImageControl.controlList.forEach(control => control.show())
   }
 
   static hide() {
-    Mask.getInstance().hide()
+    CommonControl.hide()
     ImageControl.controlList.forEach(control => control.hide())
   }
 }

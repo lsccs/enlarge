@@ -8,7 +8,7 @@ const baseClassName = 'preview-control'
 
 export default function createImageList (source) {
 
-  const render = new Render({ baseClassName, showName: 'preview-fade-in', hideName: 'preview-fade-out' })
+  const render = new Render({ baseClassName })
 
   const container = document.createElement('div')
   const inner = document.createElement('div')

@@ -1,6 +1,6 @@
 import props from "./props";
 import { addCss, getImageNatural } from "../utils";
-import CloneEnlarge from "../core/cloneEnlarge/index";
+import CloneEnlarge from "../core/clone_enlarge/index";
 import Helper from "../core/helper";
 
 /**

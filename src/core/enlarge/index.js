@@ -1,7 +1,8 @@
 import props from "./props";
 import createLayout from "../../components/layout/index";
 import {addCss, getImageNatural, removeCss} from "../../utils";
-import Mask from "../../components/mask/index";
+import Mask from "../../components/common_control/mask/index";
+import Close from "../../components/common_control/close";
 
 /**
  * 放大逻辑抽象类
@@ -94,7 +95,8 @@ export default class Enlarge {
   }
 
 
-  clickStart() {
+  clickStart(e) {
+    e && e.stopPropagation()
     if (this.isStart) {
       this.endPreview()
     } else {
@@ -114,7 +116,7 @@ export default class Enlarge {
   }
 
   startComplete(animation) {
-    const { $el, maskClose } = this.config
+    const { $el } = this.config
     this.insertDom($el)
     // 重新触发回流，否则无法触发动画
     // 需要动画时采取要调用钩子
@@ -125,7 +127,7 @@ export default class Enlarge {
     addCss($el, this.originRect)
 
     this.isStart = true
-    if (maskClose) this.registerEvents(Mask.getInstance().dom, this.originDomEvents)
+    this.registerComponentEvents()
   }
 
 
@@ -140,7 +142,7 @@ export default class Enlarge {
       removeCss($el, 'transition')
     }
     addCss($el, { left, top, width, height })
-    this.clearEvents(Mask.getInstance().dom)
+    this.clearComponentEvents()
     this.isStart = false
   }
 
@@ -148,6 +150,17 @@ export default class Enlarge {
   insertDom(dom) {
     this.layout.dom.appendChild(dom)
     document.body.appendChild(this.layout.dom)
+  }
+
+  clearComponentEvents() {
+    this.clearEvents(Mask.getInstance().dom)
+    this.clearEvents(Close.createIcon())
+  }
+
+  registerComponentEvents() {
+    const { maskClose } = this.config
+    if (maskClose) this.registerEvents(Mask.getInstance().dom, this.originDomEvents)
+    this.registerEvents(Close.createIcon(), this.originDomEvents)
   }
 
   setTargetAndRect({ el, targetRect }) {
@@ -166,7 +179,7 @@ export default class Enlarge {
     addCss($el, {
       transition: 'all .3s',
       position: 'fixed',
-      'z-index': '1000',
+      'z-index': '2000',
       left, top, width, height
     })
   }

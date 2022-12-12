@@ -12,8 +12,8 @@ export default class Render {
 
   constructor({ baseClassName, showName, hideName }) {
     this.baseClassName = baseClassName
-    this.showName = ` ${showName || 'show'}`
-    this.hideName = ` ${hideName || 'hide'}`
+    this.showName = ` ${showName || 'preview-fade-in'}`
+    this.hideName = ` ${hideName || 'preview-fade-out'}`
     this.baseShowClassName = ` ${this.baseClassName + this.showName}`
     this.baseHideClassName = ` ${this.baseClassName + this.hideName}`
   }
@@ -60,7 +60,6 @@ export default class Render {
 
   hide() {
     this.addHideCss(this.dom)
-    this.dom = null
   }
 
   addShowCss(dom) {
@@ -81,6 +80,7 @@ export default class Render {
     return () => {
       if (dom.parentNode && dom.className.includes(this.hideName)) {
         dom.parentNode.removeChild(dom)
+        this.dom = null
       }
     }
   }
