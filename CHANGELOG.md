@@ -38,3 +38,7 @@
 * 增加事件监听
 ### fix
 * 修复非图片模式下dom层级的问题
+
+## [1.1.11](https://github.com/lsccs/enlarge/tree/v1.1.1) ()
+### feature
+* 增加事件监听 （startEnd、closeEnd）

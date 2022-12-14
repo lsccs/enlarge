@@ -34,7 +34,9 @@ class Enlarge {
 class Events {
   // 事件名称
   static startAnimationend = 'startAnimationend';
+  static startEnd = 'startEnd';
   static closeAnimationend = 'closeAnimationend';
+  static closeEnd = 'closeEnd';
   
   // 注册事件
   static addEvent(name, cb);

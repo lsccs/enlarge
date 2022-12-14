@@ -1,7 +1,9 @@
 export default class Event {
 
   static startAnimationend = 'startAnimationend';
+  static startEnd = 'startEnd';
   static closeAnimationend = 'closeAnimationend';
+  static closeEnd = 'closeEnd';
 
   static pool = {};
 

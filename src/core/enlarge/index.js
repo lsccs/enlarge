@@ -3,6 +3,7 @@ import createLayout from "../../components/layout/index";
 import {addCss, getImageNatural, removeCss} from "../../utils";
 import Mask from "../../components/common_control/mask/index";
 import Close from "../../components/common_control/close";
+import Events from '../../aspect/event';
 
 /**
  * 放大逻辑抽象类
@@ -99,8 +100,10 @@ export default class Enlarge {
     e && e.stopPropagation()
     if (this.isStart) {
       this.endPreview()
+      Events.touchEvent(Events.closeEnd);
     } else {
       this.startPreview()
+      Events.touchEvent(Events.startEnd);
     }
   }
 
