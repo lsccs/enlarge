@@ -1,6 +1,6 @@
 {
   "name": "preview-enlarge",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Enlarge preview picture or anything",
   "main": "./dist/index.js",
   "scripts": {

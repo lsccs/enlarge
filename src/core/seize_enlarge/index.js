@@ -9,7 +9,7 @@ export default class SeizeEnlarge extends Enlarge {
 
   static seizeMap = new Map()
 
-  siblingNode = null
+  sibling = null
   sourceDom = null
 
   constructor(source) {
@@ -58,13 +58,13 @@ export default class SeizeEnlarge extends Enlarge {
   }
 
   setEndCallback(dom) {
-    const { el } = this.config
-    dom.parentNode.removeChild(dom)
-    const empty = SeizeEnlarge.seizeMap.get(this.sourceDom)
-    empty.parentNode.removeChild(empty)
-    this.siblingNode.parentNode.insertBefore(el, this.siblingNode)
+    const { el } = this.config;
+    dom.parentNode.removeChild(dom);
+    const empty = SeizeEnlarge.seizeMap.get(this.sourceDom);
+    empty.parentNode.removeChild(empty);
+    this.sibling.parent.insertBefore(el, this.sibling.node);
     // 清除定位样式
-    this.clearCss()
+    this.clearCss();
   }
 
 
@@ -78,7 +78,10 @@ export default class SeizeEnlarge extends Enlarge {
   }
 
   insertDom(dom) {
-    this.siblingNode = dom.nextSibling
+    this.sibling = {
+      node: dom.nextSibling,
+      parent: dom.parentNode,
+    }
     super.insertDom(dom)
   }
 
