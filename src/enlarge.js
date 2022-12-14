@@ -1,5 +1,5 @@
-import ImageEnlarge from "./image_enlarge/index";
-import AnyEnlarge from "./any_enlarge/index";
+import ImageEnlarge from "./controler/image_enlarge/index";
+import AnyEnlarge from "./controler/any_enlarge/index";
 
 export default class Enlarge {
 

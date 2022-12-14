@@ -1,7 +1,7 @@
 import props from "./props";
-import { addCss, getImageNatural } from "../utils";
-import CloneEnlarge from "../core/clone_enlarge/index";
-import Helper from "../core/helper";
+import { addCss, getImageNatural } from "../../utils";
+import CloneEnlarge from "../../core/clone_enlarge";
+import Helper from "../../core/helper";
 
 /**
  * 图片预览

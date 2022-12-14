@@ -1,6 +1,14 @@
 ##### 目前支持下方两种使用方式
 
 ##### * 项目引入了 Iconify 图标库
+
+
+```javascript
+import Enlarge, { Events } from 'preview-enlarge';
+
+```
+
+
 ```javascript
 // 1. 图片预览初始化配置
 const preview = Enlarge.ImagePreview(ImageConfig)
@@ -19,6 +27,21 @@ preview.render()
 class Enlarge {
   // 添加全局配置
   static setGlobalConfig();
+}
+```
+```javascript
+// 全局事件
+class Events {
+  // 事件名称
+  static startAnimationend = 'startAnimationend';
+  static closeAnimationend = 'closeAnimationend';
+  
+  // 注册事件
+  static addEvent(name, cb);
+  // 关闭事件
+  static removeEvent(name, cb);
+  // 触发事件
+  static touchEvent(name);
 }
 ```
 

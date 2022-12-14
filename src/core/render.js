@@ -1,3 +1,4 @@
+import Event from '../../src/aspect/event';
 
 export default class Render {
 
@@ -72,12 +73,12 @@ export default class Render {
   registerEvents(dom) {
     ['transitionend', 'animationend'].forEach(event => {
       dom.addEventListener(event, this.ontransitionend(dom))
-      dom.addEventListener(event, this.ontransitionend(dom))
     })
   }
 
   ontransitionend(dom) {
-    return () => {
+    return (e) => {
+      Event.touchEventByCssName(e);
       if (dom.parentNode && dom.className.includes(this.hideName)) {
         dom.parentNode.removeChild(dom)
         this.dom = null

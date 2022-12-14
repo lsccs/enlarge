@@ -1,5 +1,5 @@
 import props from "../image_enlarge/props";
-import SeizeEnlarge from "../core/seize_enlarge/index";
+import SeizeEnlarge from "../../core/seize_enlarge";
 
 export default class AnyPreview {
 
