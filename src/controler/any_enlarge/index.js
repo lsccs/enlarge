@@ -1,12 +1,14 @@
 import props from "../image_enlarge/props";
 import SeizeEnlarge from "../../core/seize_enlarge";
+import Events from '../../aspect/event'
 
-export default class AnyPreview {
+export default class AnyPreview extends Events {
 
   config = null;
   preview = null;
 
   constructor(source) {
+    super();
     const defaultProps = { ...props }
     this.config = Object.assign(defaultProps, source)
     this.onLoad()
@@ -16,7 +18,7 @@ export default class AnyPreview {
 
   onLoad() {
     this.validate()
-    this.preview = new SeizeEnlarge(this.config)
+    this.preview = new SeizeEnlarge(this.config, this)
     this.preview.onLoad()
   }
 

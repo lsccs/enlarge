@@ -39,11 +39,11 @@ class Events {
   static closeEnd = 'closeEnd';
   
   // 注册事件
-  static addEvent(name, cb);
+  addEvent(name, cb);
   // 关闭事件
-  static removeEvent(name, cb);
+  removeEvent(name, cb);
   // 触发事件
-  static touchEvent(name);
+  touchEvent(name);
 }
 ```
 

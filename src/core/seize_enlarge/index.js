@@ -12,8 +12,8 @@ export default class SeizeEnlarge extends Enlarge {
   sibling = null
   sourceDom = null
 
-  constructor(source) {
-    super(source)
+  constructor(source, controller) {
+    super(source, controller)
   }
 
 
@@ -69,7 +69,7 @@ export default class SeizeEnlarge extends Enlarge {
 
 
   clearCss() {
-    const attrs = ['position', 'left', 'top']
+    const attrs = ['position', 'left', 'top', 'z-index']
     attrs.forEach(k => removeCss(this.sourceDom, k))
   }
 
@@ -95,7 +95,7 @@ export default class SeizeEnlarge extends Enlarge {
   }
 
   static createSeizeContainer(el) {
-    const div = el.cloneNode(true)
+    const div = el.cloneNode()
     const { height, width } = el.getBoundingClientRect()
     div.style.height = height + 'px'
     div.style.width = width + 'px'

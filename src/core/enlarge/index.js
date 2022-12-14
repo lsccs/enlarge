@@ -12,7 +12,7 @@ export default class Enlarge {
 
   isStart = false
   layout = null
-  mask = null
+  controller = null
 
   config = null
   originRect = null
@@ -25,9 +25,10 @@ export default class Enlarge {
   eventPool = new Map()
 
 
-  constructor(source) {
+  constructor(source, controller) {
     const defaultProps = { ...props }
     this.config = Object.assign(defaultProps, source)
+    this.controller = controller
   }
 
   onLoad() {
@@ -100,15 +101,16 @@ export default class Enlarge {
     e && e.stopPropagation()
     if (this.isStart) {
       this.endPreview()
-      Events.touchEvent(Events.closeEnd);
+      this.controller.touchEvent(Events.closeEnd);
     } else {
       this.startPreview()
-      Events.touchEvent(Events.startEnd);
+      this.controller.touchEvent(Events.startEnd);
     }
   }
 
 
   startPreview(animation = true) {
+    this.setInitialEl()
     const { $el } = this.config
     // 设置初始态
     this.setInitialCss($el)
@@ -137,6 +139,7 @@ export default class Enlarge {
   endPreview(animation = true) {
     const { $el } = this.config
     const { left, top, width, height } = this.currentRect
+    this.setInitialEl()
     // 先清除其他属性
     this.clearAttrs($el)
     if (animation) {
@@ -149,6 +152,10 @@ export default class Enlarge {
     this.isStart = false
   }
 
+  setInitialEl() {
+    // 重置标识，用于 避免动画结束事件回调多次调用
+    this.config.$el.end = false
+  }
 
   insertDom(dom) {
     this.layout.dom.appendChild(dom)
@@ -201,6 +208,10 @@ export default class Enlarge {
 
   // 动画结束回调
   enlargeDestroy(e) {
+    if (!e.target.end) {
+      this.controller.touchEventByIsStart(this.isStart);
+      e.target.end = true
+    }
     // 需要在关闭并且动画结束时销毁克隆元素
     const { $el } = this.config
     if (!this.isStart && e.target === $el) {

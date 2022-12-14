@@ -44,3 +44,7 @@
 ## [1.1.21](https://github.com/lsccs/enlarge/tree/v1.1.21) ()
 ### feature
 * 增加事件监听 （startEnd、closeEnd）
+
+## [1.1.22](https://github.com/lsccs/enlarge/tree/v1.1.22) ()
+### fix
+* 调整事件触发机制

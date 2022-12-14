@@ -2,11 +2,12 @@ import props from "./props";
 import { addCss, getImageNatural } from "../../utils";
 import CloneEnlarge from "../../core/clone_enlarge";
 import Helper from "../../core/helper";
+import Events from '../../aspect/event'
 
 /**
  * 图片预览
  */
-export default class ImagePreview {
+export default class ImagePreview extends Events {
 
   config = null
   container = null
@@ -16,6 +17,7 @@ export default class ImagePreview {
 
 
   constructor(source) {
+    super();
     const defaultProps = { ...props }
     this.config = Object.assign(defaultProps, source)
     this.onLoad()
@@ -120,7 +122,7 @@ export default class ImagePreview {
         ...this.config,
         handle: ({ name, arg }) =>
           Helper.handle({ name, arg })
-      }),
+      }, this),
       { get: this.getProperty.bind(this) }
     ]
   }

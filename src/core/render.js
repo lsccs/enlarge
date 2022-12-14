@@ -1,5 +1,3 @@
-import Event from '../../src/aspect/event';
-
 export default class Render {
 
   nodes = []
@@ -78,7 +76,6 @@ export default class Render {
 
   ontransitionend(dom) {
     return (e) => {
-      Event.touchEventByCssName(e);
       if (dom.parentNode && dom.className.includes(this.hideName)) {
         dom.parentNode.removeChild(dom)
         this.dom = null

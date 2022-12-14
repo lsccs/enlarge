@@ -5,35 +5,30 @@ export default class Event {
   static closeAnimationend = 'closeAnimationend';
   static closeEnd = 'closeEnd';
 
-  static pool = {};
+  eventPool = {};
 
-  static addEvent(name, cb) {
-    if (!Event.pool[name]) {
-      Event.pool[name] = [];
+   addEvent(name, cb) {
+    if (!this.eventPool[name]) {
+      this.eventPool[name] = [];
     }
-    Event.pool[name].push(cb);
+     this.eventPool[name].push(cb);
   }
 
-  static removeEvent(name, cb) {
-    const events = Event.pool[name] || [];
+   removeEvent(name, cb) {
+    const events = this.eventPool[name] || [];
     const index = events.findIndex(fn => fn === cb);
     if (index !== -1) {
       events.splice(index, 1);
     }
   }
 
-  static touchEvent(name) {
-    const events = Event.pool[name] || [];
+
+   touchEvent(name) {
+    const events = this.eventPool[name] || [];
     events.forEach(fn => fn());
   }
 
-  static touchEventByCssName(e) {
-    const { propertyName, target } = e;
-    switch (propertyName) {
-      case 'background-color':
-        const isStart = target.className.includes('show');
-        Event.touchEvent(isStart ? Event.startAnimationend : Event.closeAnimationend);
-        return
-    }
+  touchEventByIsStart(isStart) {
+    this.touchEvent(isStart ? Event.startAnimationend : Event.closeAnimationend);
   }
 }
