@@ -9,12 +9,14 @@ export function getImageNatural(img) {
 
 // 添加css
 export function addCss(el, style, isPx = true) {
+  const obj = {}
   Object.keys(style).forEach(key => {
     if (typeof style[key] === 'number' && isPx) {
-      return style[key] = `${style[key]}px`
+      return obj[key] = `${style[key]}px`
     }
+    obj[key] = style[key]
   })
-  Object.assign(el.style, style)
+  Object.assign(el.style, obj)
 }
 
 // 移除css

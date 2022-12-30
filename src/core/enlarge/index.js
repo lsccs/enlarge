@@ -9,6 +9,7 @@ import Events from '../../aspect/event';
  * 放大逻辑抽象类
  */
 export default class Enlarge {
+  static bodyRect = document.body.getBoundingClientRect()
 
   isStart = false
   layout = null
@@ -19,7 +20,7 @@ export default class Enlarge {
   currentRect = null
 
   originDomEvents = [['click', 'clickStart']]
-  cloneDomEvents = [['transitionend', 'enlargeDestroy']]
+  cloneDomEvents = [['transitionend', 'enlargeDestroy'], ['wheel', 'onWheel']]
 
   clearEventNames = ['click']
   eventPool = new Map()
@@ -60,7 +61,7 @@ export default class Enlarge {
   }
 
   initLastRect() {
-    const { width, height } = document.body.getBoundingClientRect()
+    const { width, height } = Enlarge.bodyRect
     const { width: elOriginWidth, height: elOriginHeight } = this.originRect
     this.originRect.left = (width - elOriginWidth) / 2
     this.originRect.top = (height - elOriginHeight) / 2
@@ -102,9 +103,13 @@ export default class Enlarge {
     if (this.isStart) {
       this.endPreview()
       this.controller.touchEvent(Events.closeEnd);
+      removeCss(document.body, 'overflow')
     } else {
       this.startPreview()
       this.controller.touchEvent(Events.startEnd);
+      addCss(document.body, {
+        overflow: 'hidden',
+      })
     }
   }
 
@@ -204,6 +209,36 @@ export default class Enlarge {
         removeCss(el, key)
       }
     })
+  }
+
+  onWheel(e) {
+    e.stopPropagation();
+    // 1 - 10 随机比例
+    const proportion = (Math.floor(Math.random() * 9) + 1) / 100
+    const isUp = e.wheelDeltaY > 0;
+    const width = this.originRect.width * proportion;
+    const height = this.originRect.height * proportion;
+
+    const { left, top } = this.originRect
+    const wheelX = (e.clientX - left) / this.originRect.width
+    const wheelY = (e.clientY - top) / this.originRect.height
+
+    // 1. 求出鼠标位置在图片的位置百分比
+    // 2. 求出图片放大多少像素
+    // 3. 定位的值 = 图片放大的像素 * 图片位置的百分比
+    // 待优化
+    if (isUp) {
+      this.originRect.width += width
+      this.originRect.height += height
+      this.originRect.left -= width * wheelX
+      this.originRect.top -= height * wheelY
+    } else {
+      this.originRect.width -= width
+      this.originRect.height -= height
+      this.originRect.left += width * wheelX
+      this.originRect.top += height * wheelY
+    }
+    addCss(this.config.$el, this.originRect)
   }
 
   // 动画结束回调
