@@ -9,14 +9,21 @@ import Events from '../../aspect/event';
  * 放大逻辑抽象类
  */
 export default class Enlarge {
+  // body 位置信息，防止重复获取
   static bodyRect = document.body.getBoundingClientRect()
+  // 当前比例
+  currentProportion = 100
 
   isStart = false
   layout = null
   controller = null
 
   config = null
+  // 目标位置大小信息
   originRect = null
+  // 实时变化的位置大小信息
+  dynamicOriginRect = null
+  // 源位置大小信息
   currentRect = null
 
   originDomEvents = [['click', 'clickStart']]
@@ -49,11 +56,11 @@ export default class Enlarge {
     const currentRect = { width: this.currentRect.width, height: this.currentRect.height }
     // 尝试获取图片原始大小
     const natural = getImageNatural(this.config.el)
-    this.originRect = {
+    this.setOriginRect({
       ...currentRect,
       ...(natural.width ? natural : {}),
       ...this.config.targetRect
-    }
+    })
   }
 
   initLayout() {
@@ -63,8 +70,11 @@ export default class Enlarge {
   initLastRect() {
     const { width, height } = Enlarge.bodyRect
     const { width: elOriginWidth, height: elOriginHeight } = this.originRect
-    this.originRect.left = (width - elOriginWidth) / 2
-    this.originRect.top = (height - elOriginHeight) / 2
+    this.setOriginRect({
+      ...this.originRect,
+      left: (width - elOriginWidth) / 2,
+      top: (height - elOriginHeight) / 2
+    })
   }
 
   initEvent() {
@@ -180,7 +190,7 @@ export default class Enlarge {
 
   setTargetAndRect({ el, targetRect }) {
     this.config.$el = el
-    this.originRect = targetRect
+    this.setOriginRect(targetRect)
 
     this.registerEvents(el, this.cloneDomEvents)
     // 重新计算位置
@@ -203,6 +213,33 @@ export default class Enlarge {
     this.currentRect = rect
   }
 
+  setOriginRect(rect) {
+    this.originRect = rect
+    this.dynamicOriginRect = { ...rect }
+  }
+
+  setCurrentProportion(value) {
+    const v = value > 1 ? value : 1
+    this.currentProportion = Math.floor(v * 100) / 100
+  }
+
+  // 根据缩放宽高比例，调整元素
+  setDynamicOriginRectCss(rect) {
+    const { width, height, wheelX, wheelY, isUp } = rect
+    if (isUp) {
+      this.dynamicOriginRect.width += width
+      this.dynamicOriginRect.height += height
+      this.dynamicOriginRect.left -= width * wheelX
+      this.dynamicOriginRect.top -= height * wheelY
+    } else {
+      this.dynamicOriginRect.width -= width
+      this.dynamicOriginRect.height -= height
+      this.dynamicOriginRect.left += width * wheelX
+      this.dynamicOriginRect.top += height * wheelY
+    }
+    addCss(this.config.$el, this.dynamicOriginRect)
+  }
+
   clearAttrs(el) {
     Object.keys(this.originRect).forEach(key => {
       if (!(key in this.currentRect)) {
@@ -211,34 +248,31 @@ export default class Enlarge {
     })
   }
 
+
   onWheel(e) {
     e.stopPropagation();
-    // 1 - 10 随机比例
-    const proportion = (Math.floor(Math.random() * 9) + 1) / 100
-    const isUp = e.wheelDeltaY > 0;
-    const width = this.originRect.width * proportion;
-    const height = this.originRect.height * proportion;
 
-    const { left, top } = this.originRect
-    const wheelX = (e.clientX - left) / this.originRect.width
-    const wheelY = (e.clientY - top) / this.originRect.height
+    const isUp = e.wheelDeltaY > 0;
+    // 获取缩放比例
+    const p = this.currentProportion >= 10 ? this.currentProportion / 10 : 1
+    const transferP = p / 100;
+    console.log(this.currentProportion, 'sssss')
+    if (this.currentProportion <= 1 && !isUp) return;
 
     // 1. 求出鼠标位置在图片的位置百分比
     // 2. 求出图片放大多少像素
     // 3. 定位的值 = 图片放大的像素 * 图片位置的百分比
-    // 待优化
-    if (isUp) {
-      this.originRect.width += width
-      this.originRect.height += height
-      this.originRect.left -= width * wheelX
-      this.originRect.top -= height * wheelY
-    } else {
-      this.originRect.width -= width
-      this.originRect.height -= height
-      this.originRect.left += width * wheelX
-      this.originRect.top += height * wheelY
-    }
-    addCss(this.config.$el, this.originRect)
+    const { left, top, width: dWidth, height: dHeight } = this.dynamicOriginRect
+
+    const width = dWidth * transferP;
+    const height = dHeight * transferP;
+
+    const wheelX = (e.clientX - left) / dWidth
+    const wheelY = (e.clientY - top) / dHeight
+    // 设置定位
+    this.setDynamicOriginRectCss({ width, height, wheelX, wheelY, isUp })
+    this.setCurrentProportion(this.currentProportion + (isUp ? p : -p))
+
   }
 
   // 动画结束回调
