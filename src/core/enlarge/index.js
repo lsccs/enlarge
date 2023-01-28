@@ -191,7 +191,6 @@ export default class Enlarge {
   setTargetAndRect({ el, targetRect }) {
     this.config.$el = el
     this.setOriginRect(targetRect)
-
     this.registerEvents(el, this.cloneDomEvents)
     // 重新计算位置
     this.initLastRect()
@@ -226,6 +225,7 @@ export default class Enlarge {
   // 根据缩放宽高比例，调整元素
   setDynamicOriginRectCss(rect) {
     const { width, height, wheelX, wheelY, isUp } = rect
+
     if (isUp) {
       this.dynamicOriginRect.width += width
       this.dynamicOriginRect.height += height
@@ -250,28 +250,33 @@ export default class Enlarge {
 
 
   onWheel(e) {
-    e.stopPropagation();
-
     const isUp = e.wheelDeltaY > 0;
-    // 获取缩放比例
-    const p = this.currentProportion >= 10 ? this.currentProportion / 10 : 1
-    const transferP = p / 100;
-    console.log(this.currentProportion, 'sssss')
     if (this.currentProportion <= 1 && !isUp) return;
 
+    // 获取缩放比例
+    let p = Math.trunc(this.currentProportion / 10)
+    const newCurrentProportion = this.currentProportion + (isUp ? p : -p)
+    const proportionPosition = Math.trunc(newCurrentProportion / 10)
+    console.log(p, proportionPosition, 'proportionPosition')
+    if (p - proportionPosition > 1 ) {
+      p = proportionPosition
+    }
+
+    const transferP = p / 100;
+    this.setCurrentProportion(this.currentProportion + (isUp ? p : -p))
+    console.log(this.currentProportion, 'currentProportion')
     // 1. 求出鼠标位置在图片的位置百分比
     // 2. 求出图片放大多少像素
     // 3. 定位的值 = 图片放大的像素 * 图片位置的百分比
     const { left, top, width: dWidth, height: dHeight } = this.dynamicOriginRect
 
-    const width = dWidth * transferP;
-    const height = dHeight * transferP;
+    const width = this.originRect.width * transferP;
+    const height = this.originRect.height * transferP;
 
     const wheelX = (e.clientX - left) / dWidth
     const wheelY = (e.clientY - top) / dHeight
     // 设置定位
     this.setDynamicOriginRectCss({ width, height, wheelX, wheelY, isUp })
-    this.setCurrentProportion(this.currentProportion + (isUp ? p : -p))
 
   }
 
